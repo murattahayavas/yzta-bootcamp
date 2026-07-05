@@ -101,20 +101,37 @@ hesap ve doğrulama tam doğrulukta, açıklama şablonla üretilir.
 ## 📈 Proje Yönetimi & Ürün Durumu
 
 ### 📊 Product Backlog URL
-* [Miro Backlog Board](BURAYA_MIRO_LINKI) <!-- TODO: gerçek link -->
-
-### 📌 Sprint 1 Board
-*Mavi kartlar kullanıcı hikâyelerini (Story), kırmızı kartlar teknik görevleri
-(Task) temsil eder. 5 Temmuz itibarıyla pano:*
-
-![Sprint 1 Board](docs/sprint1/board.png) <!-- TODO: screenshot ekle -->
+* Miro Backlog Board: **[BURAYA MIRO LİNKİNİZİ YAPIŞTIRIN]**
 
 ### 💬 Sprint 1 Daily Scrum Notları
-* [`docs/sprint1/toplanti_raporlari.pdf`](docs/sprint1/toplanti_raporlari.pdf)
+Sprint boyunca yapılan dört toplantının (22, 26, 30 Haziran ve 4 Temmuz)
+kişi bazlı yapıldı/yapılacak/engel raporları:
+* 📄 [`docs/sprint1/toplanti_raporlari.pdf`](docs/sprint1/toplanti_raporlari.pdf)
 
-### 🖼️ Ürün Durumu
-![Dosya Yükleme Ekranı](docs/sprint1/ekran_yukleme.png) <!-- TODO: screenshot ekle -->
-![Sonuç Ekranı](docs/sprint1/ekran_sonuc.png) <!-- TODO: screenshot ekle -->
+### 📌 Sprint 1 Board
+*Sprint panosu Miro üzerinde tutulmaktadır (yukarıdaki bağlantı). Mavi kartlar
+kullanıcı hikâyelerini (Story), kırmızı kartlar teknik görevleri (Task) temsil eder.*
+<!-- Pano ekran görüntüsü alınca: docs/sprint1/board.png olarak kaydedip
+     aşağıdaki satırın başındaki yorum işaretlerini kaldırın.
+![Sprint 1 Board](docs/sprint1/board.png)
+-->
+
+### 🖼️ Ürün Durumu (Sprint 1 kapanış ekran görüntüleri)
+
+**Bilgi girişi ve belge yükleme ekranı** — sürükle-bırak yükleme alanı,
+çalışma bilgileri formu ve serbest metin soru kutusu:
+
+![Bilgi girişi ekranı](docs/sprint1/ekran_form.png)
+
+**Sonuç ekranı** — üç kalemin özet kartları ve Critic doğrulama rozeti
+(demo modu bildirimiyle birlikte):
+
+![Sonuç ekranı](docs/sprint1/ekran_sonuc.png)
+
+**Hesap adımları ve dayanaklar** — her kalemin adım adım dökümü, dönemsel
+kıdem tavanı seçimi ve yasal dayanak notları:
+
+![Hesap adımları ekranı](docs/sprint1/ekran_adimlar.png)
 
 ### 🗺️ Sprint 2 Yol Haritası
 * Senaryo analizi ve karşılaştırma ("istifa vs çıkarılma vs ikale")
