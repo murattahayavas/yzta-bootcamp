@@ -121,17 +121,17 @@ kullanıcı hikâyelerini (Story), kırmızı kartlar teknik görevleri (Task) t
 **Bilgi girişi ve belge yükleme ekranı** — sürükle-bırak yükleme alanı,
 çalışma bilgileri formu ve serbest metin soru kutusu:
 
-![Bilgi girişi ekranı](docs/sprint1/ekran_form.png)
+![Bilgi girişi ekranı](docs/ekran_form.png)
 
 **Sonuç ekranı** — üç kalemin özet kartları ve Critic doğrulama rozeti
 (demo modu bildirimiyle birlikte):
 
-![Sonuç ekranı](docs/sprint1/ekran_sonuc.png)
+![Sonuç ekranı](docs/ekran_sonuc.png)
 
 **Hesap adımları ve dayanaklar** — her kalemin adım adım dökümü, dönemsel
 kıdem tavanı seçimi ve yasal dayanak notları:
 
-![Hesap adımları ekranı](docs/sprint1/ekran_adimlar.png)
+![Hesap adımları ekranı](docs/ekran_adimlar.png)
 
 ### 🗺️ Sprint 2 Yol Haritası
 * Senaryo analizi ve karşılaştırma ("istifa vs çıkarılma vs ikale")
