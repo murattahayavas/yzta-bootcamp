@@ -101,12 +101,12 @@ hesap ve doğrulama tam doğrulukta, açıklama şablonla üretilir.
 ## 📈 Proje Yönetimi & Ürün Durumu
 
 ### 📊 Product Backlog URL
-* Miro Backlog Board: **[BURAYA MIRO LİNKİNİZİ YAPIŞTIRIN]**
+* 📄 [`docs/backlog_raporlari.pdf`](docs/backlog_raporlari.pdf)
 
 ### 💬 Sprint 1 Daily Scrum Notları
 Sprint boyunca yapılan dört toplantının (22, 26, 30 Haziran ve 4 Temmuz)
 kişi bazlı yapıldı/yapılacak/engel raporları:
-* 📄 [`docs/sprint1/toplanti_raporlari.pdf`](docs/sprint1/toplanti_raporlari.pdf)
+* 📄 [`docs/sprint1/toplanti_raporlari.pdf`](docs/toplanti_raporlari.pdf)
 
 ### 📌 Sprint 1 Board
 *Sprint panosu Miro üzerinde tutulmaktadır (yukarıdaki bağlantı). Mavi kartlar
