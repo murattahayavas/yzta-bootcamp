@@ -100,20 +100,46 @@ hesap ve doğrulama tam doğrulukta, açıklama şablonla üretilir.
 
 ## 📈 Proje Yönetimi & Ürün Durumu
 
+### 📋 Sprint 1 — Backlog Düzeni ve Story Seçimleri
+
+**Backlog Düzeni**
+
+Product Backlog, proje kapsamındaki teknik bağımlılıklar dikkate alınarak
+öncelik sırasına göre düzenlenmiştir. İlk aşamada sistemin temelini oluşturacak
+veri yükleme altyapısı ve çoklu ajan mimarisi önceliklendirilmiş, bu yapı
+tamamlandıktan sonra hesaplama ve analiz süreçlerine yönelik geliştirmelerin
+yapılması planlanmıştır.
+
+**Story Seçimi ve Sprint Kapasitesi**
+
+Sprint 1 için ekip kapasitesi toplam **21 Story Point** olarak belirlenmiştir.
+Sprint planlama toplantısında öncelikli ihtiyaçlar değerlendirilmiş ve bu
+kapasiteyi aşmayacak şekilde ilk dört Product Backlog Item sprint kapsamına
+alınmıştır.
+
+**Risk Yönetimi**
+
+Sprint planlaması yapılırken büyük ölçekli işlerin tek parça halinde
+alınmamasına dikkat edilmiştir. En yüksek efora sahip olan "Multi-Agent Çekirdek
+Mimarisi" çalışması **8 Story Point** olarak planlanmış ve sprint kapasitesinin
+yarısını aşmayacak şekilde sınırlandırılmıştır. Böylece geliştirme sürecinin
+daha kontrollü ilerlemesi, olası gecikmelerin önlenmesi ve gerektiğinde işlerin
+daha küçük görevlere ayrılarak yönetilmesi hedeflenmiştir.
+
 ### 📊 Product Backlog URL
 * 📄 [`docs/backlog_raporlari.pdf`](docs/backlog_raporlari.pdf)
 
 ### 💬 Sprint 1 Daily Scrum Notları
 Sprint boyunca yapılan dört toplantının (22, 26, 30 Haziran ve 4 Temmuz)
 kişi bazlı yapıldı/yapılacak/engel raporları:
-* 📄 [`docs/sprint1/toplanti_raporlari.pdf`](docs/toplanti_raporlari.pdf)
+* 📄 [`docs/toplanti_raporlari.pdf`](docs/toplanti_raporlari.pdf)
 
 ### 📌 Sprint 1 Board
-*Sprint panosu Miro üzerinde tutulmaktadır (yukarıdaki bağlantı). Mavi kartlar
-kullanıcı hikâyelerini (Story), kırmızı kartlar teknik görevleri (Task) temsil eder.*
-<!-- Pano ekran görüntüsü alınca: docs/sprint1/board.png olarak kaydedip
+*Sprint panosu Miro üzerinde tutulmaktadır. Mavi kartlar kullanıcı hikâyelerini
+(Story), kırmızı kartlar teknik görevleri (Task) temsil eder.*
+<!-- Pano ekran görüntüsü alınca: docs/board.png olarak kaydedip
      aşağıdaki satırın başındaki yorum işaretlerini kaldırın.
-![Sprint 1 Board](docs/sprint1/board.png)
+![Sprint 1 Board](docs/board.png)
 -->
 
 ### 🖼️ Ürün Durumu (Sprint 1 kapanış ekran görüntüleri)
@@ -133,11 +159,75 @@ kıdem tavanı seçimi ve yasal dayanak notları:
 
 ![Hesap adımları ekranı](docs/ekran_adimlar.png)
 
+### ✅ Sprint 1 Review
+
+Sprint 1 süresince geliştirilen Flask API altyapısı, frontend dosya yükleme
+ekranı prototipi ve LangGraph (LangChain ekosistemi) tabanlı çekirdek ajan
+mimarisinin ilk çalışan sürümü değerlendirilmiş, tamamlanan çalışmalar gözden
+geçirilmiş ve sistem test sonuçları incelenmiştir.
+
+**Alınan Kararlar**
+
+Kullanıcılardan toplanacak verilerin güvenli şekilde saklanması ve analiz
+edilebilmesi amacıyla proje kapsamında bir veritabanı oluşturulmasına karar
+verilmiştir. Yapılan değerlendirme sonucunda, ilk sprintte geliştirilen dosya
+yükleme ve form ekranı için henüz veritabanı entegrasyonuna ihtiyaç olmadığı
+görülmüştür. Bu nedenle veritabanı geliştirme çalışması Product Backlog'a
+alınmış ve Sprint 2 kapsamında geliştirilmek üzere ertelenmiştir.
+
+**Ürün Durumu**
+
+Sprint sonunda gerçekleştirilen entegrasyon testlerinde, yüklenen bordro
+belgelerinin Flask API üzerinden başarılı şekilde sisteme aktarıldığı ve elde
+edilen verilerin Hesaplama Ajanı tarafından sorunsuz işlendiği görülmüştür.
+Yapılan testlerde sistemin temel işlevlerini kararlı bir şekilde yerine
+getirdiği doğrulanmıştır.
+
+**Sonraki Sprint İçin Planlanan Çalışmalar**
+
+Bir sonraki sprintte çoklu ajan yapısına gelişmiş senaryo analizleri
+eklenecektir. Bunlar arasında istifa durumunda oluşabilecek hak kayıplarının
+hesaplanması, belirli bir süre sonra işten ayrılma senaryolarının simülasyonu
+ve premium PDF raporlama özelliğinin geliştirilmesi yer almaktadır.
+
+**Sprint Review Katılımcıları**
+
+* Taha Yavaş — Scrum Master
+* Zuhal Tuana Yıldırım — Product Owner
+* Mühire Alkan — Developer
+
+### 🔄 Sprint 1 Retrospective
+
+Sprint 1 tamamlandıktan sonra ekip, çalışma sürecini değerlendirerek sonraki
+sprintlerde uygulanmak üzere aşağıdaki iyileştirme kararlarını almıştır.
+
+**Görev Dağılımı**
+
+İlk sprintteki iş yükü dağılımı değerlendirilmiş ve ekip üyeleri arasındaki
+görevlerin daha dengeli planlanmasına karar verilmiştir. Böylece iş yükünün tek
+bir kişide yoğunlaşmasının önüne geçilmesi hedeflenmektedir.
+
+**Story Point Değerlendirmesi**
+
+Görevler için verilen Story Point tahminlerinin bazı işlerde gerçek süreleri tam
+olarak yansıtmadığı görülmüştür. Sonraki sprint planlamalarında geliştiricilerin
+daha ayrıntılı geri bildirim vermesi ve tahminlerin ekip tarafından birlikte
+değerlendirilmesi kararlaştırılmıştır.
+
+**Kalite ve Test Süreci**
+
+Çoklu ajan mimarisi ile tazminat hesaplama fonksiyonlarının doğruluğu projenin
+en önemli bileşenleri arasında yer almaktadır. Bu nedenle kod kalitesini
+artırmak ve olası hataları erken tespit edebilmek amacıyla birim testlerine daha
+fazla zaman ayrılması ve test kapsamının genişletilmesi kararlaştırılmıştır.
+
 ### 🗺️ Sprint 2 Yol Haritası
 * Senaryo analizi ve karşılaştırma ("istifa vs çıkarılma vs ikale")
 * Otomatik bordro ayrıştırma (OCR) ve alanların ön-doldurulması
+* Veritabanı entegrasyonu (Sprint 1 Review kararı)
 * Kümülatif vergi matrahıyla tam ihbar neti
 * Konuşma hafızası (takip soruları)
+* Premium PDF raporlama
 
 ---
 
