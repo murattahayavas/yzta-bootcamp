@@ -248,10 +248,6 @@ olarak bölünerek tek bir işte fazla efor birikmesi engellenmiştir.
 ### 💬 Sprint 2 Daily Scrum Notları
 * 📄 [`docs/sprint2/toplanti_raporlari.pdf`](docs/sprint2/toplanti_raporlari.pdf) — 9, 12, 16 ve 19 Temmuz toplantıları
 
-### 📌 Sprint 2 Board
-*Sprint panosu Miro üzerinde tutulmuştur. Mavi kartlar kullanıcı hikâyelerini
-(Story), kırmızı kartlar teknik görevleri (Task) temsil eder.*
-
 ### 🖼️ Sprint 2 Ürün Durumu
 
 *Sprint 2 sonunda uygulamanın çalışır hali — giriş ekranı, belge yükleme alanı,
