@@ -1,3 +1,24 @@
+<div align="center">
+
+# 💼 HakKazan
+
+### AI-Powered Multi-Agent Compensation Calculator
+
+**Kıdem, ihbar ve işsizlik ödeneğini tek soruda öğrenin — kendi kendini doğrulayan hesap.**
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
+[![LangGraph](https://img.shields.io/badge/LangGraph-Multi--Agent-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://langchain-ai.github.io/langgraph/)
+[![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=for-the-badge&logo=googlegemini&logoColor=white)](https://aistudio.google.com)
+[![Tailwind](https://img.shields.io/badge/Tailwind-CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/pytest-29%20passed-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)](backend/tests)
+
+[Ürün](#-ürün-bilgileri) · [Mimari](#%EF%B8%8F-teknik-altyapı--mimari) · [Özellikler](#-ürün-özellikleri-sprint-2-itibarıyla) · [Kurulum](#%EF%B8%8F-kurulum-ve-çalıştırma) · [Sprint 1](#-sprint-1--proje-yönetimi--ürün-durumu-19-haziran--5-temmuz-2026) · [Sprint 2](#-sprint-2--proje-yönetimi--ürün-durumu-6-temmuz--19-temmuz-2026)
+
+</div>
+
+---
+
 # Yapay Zeka ve Teknoloji Akademisi — Bootcamp 2026
 
 ## 👥 Takım Bilgileri
@@ -11,9 +32,6 @@
 ---
 
 ## 🚀 Ürün Bilgileri
-
-### Ürün İsmi
-**HakKazan** — AI-Powered Multi-Agent Compensation Calculator
 
 ### Ürün Açıklaması
 HakKazan; çalışanların en kritik sorularından biri olan **"İşten ayrılırsam ne
@@ -43,6 +61,7 @@ feshinden yüksek çıkamaz") kapsayacak şekilde genişledi.
 | Frontend | HTML5 · Tailwind CSS · Vanilla JavaScript |
 | Görselleştirme | Matplotlib (senaryo karşılaştırma grafiği, base64 PNG) |
 | Test | pytest (29 birim + uçtan uca test) |
+| Deploy | Render (gunicorn + `render.yaml` blueprint) |
 
 ![HakKazan Multi-Agent Akış Şeması](docs/architecture.png)
 
@@ -109,6 +128,8 @@ grafik/tablolar ve tam PDF raporu premium modelle sunulacaktır.
 ## ⚙️ Kurulum ve Çalıştırma
 
 ```bash
+git clone https://github.com/murattahayavas/yzta-bootcamp.git
+cd yzta-bootcamp
 pip install -r requirements.txt
 cp .env.example .env          # GEMINI_API_KEY ekleyin (opsiyonel)
 cd backend && python app.py   # http://localhost:5000
@@ -118,6 +139,10 @@ cd backend && python app.py   # http://localhost:5000
 hesap ve doğrulama tam doğrulukta, açıklama şablonla üretilir.
 
 **Testler:** `cd backend && python -m pytest tests/ -q` → 29 test (14 Sprint 1 + 15 Sprint 2)
+
+**Deploy:** Repo kökündeki `render.yaml` ile [Render](https://render.com) üzerinde
+tek tıkla yayınlanabilir (gunicorn ile production sunucu, `GEMINI_API_KEY`
+ortam değişkeni panelden tanımlanır).
 
 ---
 
@@ -156,7 +181,6 @@ yarısını aşmayacak şekilde sınırlandırılmıştır.
 ### 📌 Sprint 1 Board
 *Sprint panosu Miro üzerinde tutulmuştur. Mavi kartlar kullanıcı hikâyelerini
 (Story), kırmızı kartlar teknik görevleri (Task) temsil eder.*
-<!-- ![Sprint 1 Board](docs/sprint1/board.png) -->
 
 ### 🖼️ Sprint 1 Ürün Durumu
 ![Bilgi girişi ekranı](docs/sprint1/ekran_form.png)
@@ -225,18 +249,16 @@ olarak bölünerek tek bir işte fazla efor birikmesi engellenmiştir.
 * 📄 [`docs/sprint2/toplanti_raporlari.pdf`](docs/sprint2/toplanti_raporlari.pdf) — 9, 12, 16 ve 19 Temmuz toplantıları
 
 ### 📌 Sprint 2 Board
-<!-- ![Sprint 2 Board](docs/sprint2/board.png) -->
-*Ekran görüntüsü alınınca yukarıdaki satırın yorum işaretlerini kaldırın.*
+*Sprint panosu Miro üzerinde tutulmuştur. Mavi kartlar kullanıcı hikâyelerini
+(Story), kırmızı kartlar teknik görevleri (Task) temsil eder.*
 
 ### 🖼️ Sprint 2 Ürün Durumu
-<!-- Aşağıdaki üç görsel Sprint 1'dekiyle aynı yöntemle eklenecek:
-     uygulamayı çalıştırıp senaryo karşılaştırma, grafik ve konuşma hafızası
-     ekranlarının screenshot'ları docs/sprint2/ altına kaydedilip yorum
-     işaretleri kaldırılacak.
-![Senaryo karşılaştırma ekranı](docs/sprint2/ekran_senaryo.png)
-![Karşılaştırma grafiği](docs/sprint2/ekran_grafik.png)
-![Konuşma hafızası](docs/sprint2/ekran_hafiza.png)
--->
+
+*Sprint 2 sonunda uygulamanın çalışır hali — giriş ekranı, belge yükleme alanı,
+çalışma bilgileri formu ve serbest metinli soru/senaryo alanı:*
+
+![Giriş ekranı ve belge yükleme](docs/sprint2/ekran_giris.jpg)
+![Çalışma bilgileri formu ve soru alanı](docs/sprint2/ekran_form_soru.jpg)
 
 ### ✅ Sprint 2 Review
 
