@@ -1,4 +1,4 @@
-"""Sprint 1 birim testleri — hesap motoru + Critic + graph ucundan uca."""
+"""Sprint 1 birim testleri — hesap motoru + Critic + graph uçtan uca (tekli)."""
 from datetime import date
 
 from core.calculations import CalismaBilgisi, AyrilisSekli, kidem_tazminati, ihbar_tazminati, issizlik_odenegi, hepsini_hesapla
@@ -9,7 +9,7 @@ from core import rules
 def _bilgi(**kw) -> CalismaBilgisi:
     base = dict(
         ise_giris=date(2021, 7, 5),
-        cikis=date(2026, 7, 5),          # tam 5 yıl + 1 gün, Temmuz 2026 tavan dönemi
+        cikis=date(2026, 7, 5),
         brut_maas=60_000.0,
         ayrilis=AyrilisSekli.ISVEREN_FESHI,
     )
@@ -23,30 +23,27 @@ def test_kidem_temel():
     assert s.hak_var
     beklenen = round(60_000 * gun / 365, 2)
     assert abs(s.brut - beklenen) < 0.01
-    assert s.net < s.brut  # damga kesildi
+    assert s.net < s.brut
 
 
 def test_kidem_tavan_uygulanir():
-    s = kidem_tazminati(_bilgi(brut_maas=120_000.0))  # tavan üstü maaş
-    tavan = rules.kidem_tavani(date(2026, 7, 5))       # 73.729,84
+    s = kidem_tazminati(_bilgi(brut_maas=120_000.0))
+    tavan = rules.kidem_tavani(date(2026, 7, 5))
     gun = _bilgi().kidem_gun()
     assert abs(s.brut - round(tavan * gun / 365, 2)) < 0.01
 
 
 def test_kidem_donemsel_tavan():
-    # Haziran 2026 çıkışı eski tavanı, Temmuz 2026 çıkışı yeni tavanı kullanmalı
     assert rules.kidem_tavani(date(2026, 6, 30)) == 64_948.77
     assert rules.kidem_tavani(date(2026, 7, 1)) == 73_729.84
 
 
 def test_istifa_kidem_yok():
-    s = kidem_tazminati(_bilgi(ayrilis=AyrilisSekli.ISTIFA))
-    assert not s.hak_var
+    assert not kidem_tazminati(_bilgi(ayrilis=AyrilisSekli.ISTIFA)).hak_var
 
 
 def test_bir_yildan_az_kidem_yok():
-    s = kidem_tazminati(_bilgi(ise_giris=date(2026, 1, 10)))
-    assert not s.hak_var
+    assert not kidem_tazminati(_bilgi(ise_giris=date(2026, 1, 10))).hak_var
 
 
 def test_ihbar_haftalari():
@@ -57,7 +54,7 @@ def test_ihbar_haftalari():
 
 
 def test_ihbar_hesap():
-    s = ihbar_tazminati(_bilgi())  # 5 yıl → 8 hafta
+    s = ihbar_tazminati(_bilgi())
     beklenen_brut = round(60_000 / 30 * 8 * 7, 2)
     assert s.hak_var and abs(s.brut - beklenen_brut) < 0.01
     assert "gelir_vergisi" in s.kesintiler
@@ -92,13 +89,13 @@ def test_critic_temiz_gecer():
 def test_critic_bozuk_hesabi_yakalar():
     b = _bilgi()
     sonuclar = hepsini_hesapla(b)
-    sonuclar["kidem"].brut = 10_000_000.0  # kasıtlı bozma
+    sonuclar["kidem"].brut = 10_000_000.0
     ihlaller = check(b, sonuclar)
     assert any("KIDEM" in i for i in ihlaller)
 
 
 def test_graph_uctan_uca_demo_modu():
     from graph.build import run
-    sonuc = run(_bilgi(), soru="işten çıkarılırsam ne alırım?")
+    sonuc = run(_bilgi(), soru="ne alirim genel durumum?")
     assert "aciklama" in sonuc and sonuc["sonuclar"]["kidem"].hak_var
     assert sonuc["ihlaller"] == []

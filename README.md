@@ -108,65 +108,16 @@ grafik/tablolar ve tam PDF raporu premium modelle sunulacaktır.
 
 ## ⚙️ Kurulum ve Çalıştırma
 
-### Gereksinimler
-* Python 3.10+
-* (Opsiyonel) [Google Gemini API anahtarı](https://aistudio.google.com/apikey)
-
-### GitHub'dan klonlama
-
-```bash
-git clone https://github.com/<KULLANICI_ADI>/<REPO_ADI>.git
-cd <REPO_ADI>
-```
-
-### Bağımlılıklar ve ortam
-
 ```bash
 pip install -r requirements.txt
-# Windows (PowerShell):
-Copy-Item .env.example .env
-# macOS / Linux:
-# cp .env.example .env
+cp .env.example .env          # GEMINI_API_KEY ekleyin (opsiyonel)
+cd backend && python app.py   # http://localhost:5000
 ```
 
-`.env` dosyasına `GEMINI_API_KEY` ekleyin (opsiyonel). Anahtar yoksa uygulama
-**demo modunda** çalışır: hesap ve doğrulama tam doğrulukta, açıklama şablonla üretilir.
+`GEMINI_API_KEY` tanımlı değilse uygulama **demo modunda** uçtan uca çalışır:
+hesap ve doğrulama tam doğrulukta, açıklama şablonla üretilir.
 
-### Uygulamayı başlatma
-
-```bash
-cd backend
-python app.py
-```
-
-Tarayıcıda açın: [http://localhost:5000](http://localhost:5000)
-
-### Testler
-
-```bash
-cd backend
-python -m pytest tests/ -q
-```
-
-29 test (14 Sprint 1 + 15 Sprint 2) geçmelidir.
-
-### Proje yapısı
-
-```
-hakkazan/
-├── backend/
-│   ├── app.py              # Flask API
-│   ├── agents/             # Planner, Critic, Insight, grafik
-│   ├── core/               # Hesap motoru, senaryolar, kurallar
-│   ├── graph/              # LangGraph orkestrasyon
-│   └── tests/
-├── frontend/
-│   └── index.html
-├── docs/                   # Mimari şema, backlog, sprint raporları
-├── requirements.txt
-├── .env.example
-└── README.md
-```
+**Testler:** `cd backend && python -m pytest tests/ -q` → 29 test (14 Sprint 1 + 15 Sprint 2)
 
 ---
 

@@ -6,10 +6,6 @@ saf Python fonksiyonlarıyla hesaplanır. LLM ajanları yalnızca
 (1) kullanıcının sorusunu yorumlar, (2) bu fonksiyonları araç olarak
 çağırır, (3) sonucu açıklar. Critic ajanı da bu fonksiyonların
 çıktısını bağımsız kurallarla doğrular.
-
-Her fonksiyon, ara adımları da içeren yapılandırılmış bir sonuç döner —
-böylece Critic denetleyebilir, Insight ajanı "nasıl hesaplandı"yı
-kullanıcıya gösterebilir.
 """
 from __future__ import annotations
 
@@ -21,16 +17,16 @@ from core import rules
 
 
 class AyrilisSekli(str, Enum):
-    ISVEREN_FESHI = "isveren_feshi"          # işveren tarafından çıkarılma (haklı neden dışında)
-    ISCI_HAKLI_FESIH = "isci_hakli_fesih"    # işçinin haklı nedenle feshi (İş K. m.24)
-    ISTIFA = "istifa"                        # işçinin haklı neden olmadan istifası
+    ISVEREN_FESHI = "isveren_feshi"
+    ISCI_HAKLI_FESIH = "isci_hakli_fesih"
+    ISTIFA = "istifa"
     EMEKLILIK = "emeklilik"
     ASKERLIK = "askerlik"
-    EVLILIK = "evlilik"                      # kadın işçi, evlilikten itibaren 1 yıl içinde
-    ISVEREN_HAKLI_FESIH = "isveren_hakli_fesih"  # ahlak/iyi niyet ihlali ile fesih (İş K. m.25/II)
+    EVLILIK = "evlilik"
+    ISVEREN_HAKLI_FESIH = "isveren_hakli_fesih"
+    IKALE = "ikale"  # Sprint 2: karşılıklı sona erdirme (bozma) sözleşmesi
 
 
-# Kıdem tazminatına hak kazandıran ayrılış şekilleri
 KIDEM_HAK_EDEN = {
     AyrilisSekli.ISVEREN_FESHI,
     AyrilisSekli.ISCI_HAKLI_FESIH,
@@ -39,28 +35,35 @@ KIDEM_HAK_EDEN = {
     AyrilisSekli.EVLILIK,
 }
 
-# İşsizlik ödeneğine (diğer şartlarla birlikte) hak kazandıranlar:
-# "kendi istek ve kusuru dışında işsiz kalma"
 ISSIZLIK_HAK_EDEN = {
     AyrilisSekli.ISVEREN_FESHI,
     AyrilisSekli.ISCI_HAKLI_FESIH,
 }
 
-# İhbar tazminatı: işveren, bildirim süresi vermeden feshederse işçiye öder.
 IHBAR_HAK_EDEN = {AyrilisSekli.ISVEREN_FESHI}
+
+AYRILIS_ETIKETLERI = {
+    AyrilisSekli.ISVEREN_FESHI: "İşveren feshi",
+    AyrilisSekli.ISCI_HAKLI_FESIH: "İşçi haklı nedenle fesih",
+    AyrilisSekli.ISTIFA: "İstifa",
+    AyrilisSekli.EMEKLILIK: "Emeklilik",
+    AyrilisSekli.ASKERLIK: "Askerlik",
+    AyrilisSekli.EVLILIK: "Evlilik",
+    AyrilisSekli.ISVEREN_HAKLI_FESIH: "İşveren haklı nedenle fesih (m.25/II)",
+    AyrilisSekli.IKALE: "İkale (bozma sözleşmesi)",
+}
 
 
 @dataclass
 class CalismaBilgisi:
-    """Kullanıcının girdiği çalışma bilgileri."""
     ise_giris: date
     cikis: date
-    brut_maas: float                    # aylık brüt ücret
-    yan_haklar_aylik: float = 0.0       # yemek, yol, ikramiye vb. aylık toplam (giydirme)
+    brut_maas: float
+    yan_haklar_aylik: float = 0.0
     ayrilis: AyrilisSekli = AyrilisSekli.ISVEREN_FESHI
     ihbar_suresi_kullandirildi: bool = False
-    vergi_dilimi: float = 0.15          # ihbar tazminatı için marjinal gelir vergisi oranı
-    prim_gun_son3yil: int | None = None # bilinmiyorsa kıdem süresinden tahmin edilir
+    vergi_dilimi: float = 0.15
+    prim_gun_son3yil: int | None = None
     son120gun_calisti: bool = True
 
     def kidem_gun(self) -> int:
@@ -69,16 +72,21 @@ class CalismaBilgisi:
     def giydirilmis_aylik(self) -> float:
         return self.brut_maas + self.yan_haklar_aylik
 
+    def kopya(self, **degisiklikler) -> "CalismaBilgisi":
+        veri = asdict(self)
+        veri["ayrilis"] = AyrilisSekli(veri["ayrilis"])
+        veri.update(degisiklikler)
+        return CalismaBilgisi(**veri)
+
 
 @dataclass
 class HesapSonucu:
-    """Tek bir kalemin (kıdem/ihbar/işsizlik) sonucu + denetlenebilir ara adımlar."""
     kalem: str
     hak_var: bool = False
     brut: float = 0.0
     kesintiler: dict = field(default_factory=dict)
     net: float = 0.0
-    adimlar: list = field(default_factory=list)   # insan-okur ara adımlar
+    adimlar: list = field(default_factory=list)
     notlar: list = field(default_factory=list)
 
     def to_dict(self) -> dict:
@@ -89,9 +97,6 @@ def _r2(x: float) -> float:
     return round(x, 2)
 
 
-# --------------------------------------------------------------------------
-# KIDEM TAZMİNATI
-# --------------------------------------------------------------------------
 def kidem_tazminati(b: CalismaBilgisi) -> HesapSonucu:
     s = HesapSonucu(kalem="kidem")
     gun = b.kidem_gun()
@@ -100,6 +105,14 @@ def kidem_tazminati(b: CalismaBilgisi) -> HesapSonucu:
     if gun < 365:
         s.hak_var = False
         s.notlar.append("Kıdem tazminatı için en az 1 yıl (365 gün) çalışma şartı sağlanmıyor.")
+        return s
+    if b.ayrilis == AyrilisSekli.IKALE:
+        s.hak_var = False
+        s.notlar.append(
+            "İkale (bozma) sözleşmesinde kıdem tazminatı yasal bir hak değildir; "
+            "işverenin sunduğu 'makul yarar' pazarlık konusudur. Aşağıdaki tutar, "
+            "işveren feshi olsaydı doğacak referans tutardır."
+        )
         return s
     if b.ayrilis not in KIDEM_HAK_EDEN:
         s.hak_var = False
@@ -131,11 +144,12 @@ def kidem_tazminati(b: CalismaBilgisi) -> HesapSonucu:
     return s
 
 
-# --------------------------------------------------------------------------
-# İHBAR TAZMİNATI
-# --------------------------------------------------------------------------
 def ihbar_tazminati(b: CalismaBilgisi) -> HesapSonucu:
     s = HesapSonucu(kalem="ihbar")
+    if b.ayrilis == AyrilisSekli.IKALE:
+        s.hak_var = False
+        s.notlar.append("İkale sözleşmesinde ihbar tazminatı da yasal zorunluluk değildir; pazarlık konusudur.")
+        return s
     if b.ayrilis not in IHBAR_HAK_EDEN:
         s.hak_var = False
         s.notlar.append("İhbar tazminatı, işverenin bildirim süresi vermeden feshinde işçiye ödenir; bu ayrılış şeklinde hak doğmaz.")
@@ -165,17 +179,21 @@ def ihbar_tazminati(b: CalismaBilgisi) -> HesapSonucu:
     )
     s.notlar.append(
         "İhbar tazminatı gelir vergisine tabidir; net tutar, seçtiğiniz marjinal vergi dilimine "
-        "göre yaklaşık hesaplanmıştır (kümülatif matrah tam bordro hesabı Sprint 2 kapsamındadır)."
+        "göre yaklaşık hesaplanmıştır (kümülatif matrah tam bordro hesabı sonraki geliştirmede planlanmaktadır)."
     )
     return s
 
 
-# --------------------------------------------------------------------------
-# İŞSİZLİK ÖDENEĞİ
-# --------------------------------------------------------------------------
 def issizlik_odenegi(b: CalismaBilgisi) -> HesapSonucu:
     s = HesapSonucu(kalem="issizlik")
 
+    if b.ayrilis == AyrilisSekli.IKALE:
+        s.hak_var = False
+        s.notlar.append(
+            "İkale ile ayrılan işçi, Yargıtay içtihadına göre 'kendi isteğiyle işten ayrılmış' "
+            "sayıldığından kural olarak işsizlik ödeneğine hak kazanamaz."
+        )
+        return s
     if b.ayrilis not in ISSIZLIK_HAK_EDEN:
         s.hak_var = False
         s.notlar.append("İşsizlik ödeneği 'kendi istek ve kusuru dışında' işsiz kalanlara bağlanır; bu ayrılış şeklinde hak doğmaz.")
@@ -197,7 +215,7 @@ def issizlik_odenegi(b: CalismaBilgisi) -> HesapSonucu:
         return s
 
     s.hak_var = True
-    gunluk_brut = b.brut_maas / 30          # son 4 ay ort. brüt (Sprint 1: son maaş varsayımı)
+    gunluk_brut = b.brut_maas / 30
     aylik = gunluk_brut * 30 * rules.ISSIZLIK_ODENEK_ORANI
     tavan = rules.asgari_ucret_brut(b.cikis) * rules.ISSIZLIK_TAVAN_ORANI
     s.adimlar.append(f"Son 4 ay ort. günlük brüt (son maaş varsayımı): {_r2(gunluk_brut)} TL")
@@ -222,3 +240,8 @@ def hepsini_hesapla(b: CalismaBilgisi) -> dict[str, HesapSonucu]:
         "ihbar": ihbar_tazminati(b),
         "issizlik": issizlik_odenegi(b),
     }
+
+
+def tek_seferlik_toplam(sonuclar: dict[str, HesapSonucu]) -> float:
+    """Kıdem + ihbar net toplamı (işsizlik aylık ödendiği için hariç tutulur)."""
+    return round(sonuclar["kidem"].net + sonuclar["ihbar"].net, 2)

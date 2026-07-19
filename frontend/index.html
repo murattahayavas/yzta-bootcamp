@@ -19,8 +19,8 @@
   <section class="bg-white rounded-xl shadow p-5 mb-6">
     <h2 class="font-semibold mb-2">1 · Belge yükle <span class="text-slate-400 font-normal">(opsiyonel)</span></h2>
     <div id="dropzone" class="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition">
-      <p class="text-slate-500">Bordro / çalışma belgesi sürükle-bırak ya da tıkla (PDF, PNG, JPG · max 10 MB)</p>
-      <input type="file" id="dosyaInput" class="hidden" accept=".pdf,.png,.jpg,.jpeg">
+      <p class="text-slate-500">Bordro / çalışma belgesi sürükle-bırak ya da tıkla (PDF, PNG, JPG, XLSX · max 10 MB)</p>
+      <input type="file" id="dosyaInput" class="hidden" accept=".pdf,.png,.jpg,.jpeg,.xlsx">
     </div>
     <p id="yukleDurum" class="mt-2 text-sm text-slate-500"></p>
   </section>
@@ -37,11 +37,12 @@
         <input type="number" id="brutMaas" value="60000" min="0" step="1000" class="mt-1 w-full rounded-lg border-slate-300 border p-2"></label>
       <label class="block"><span class="text-sm text-slate-600">Aylık yan haklar — yemek, yol vb. (TL)</span>
         <input type="number" id="yanHaklar" value="0" min="0" step="500" class="mt-1 w-full rounded-lg border-slate-300 border p-2"></label>
-      <label class="block"><span class="text-sm text-slate-600">Ayrılış şekli</span>
+      <label class="block"><span class="text-sm text-slate-600">Ayrılış şekli (mevcut / planlanan)</span>
         <select id="ayrilis" class="mt-1 w-full rounded-lg border-slate-300 border p-2">
           <option value="isveren_feshi">İşveren tarafından çıkarıldım / çıkarılacağım</option>
           <option value="isci_hakli_fesih">Haklı nedenle kendim feshettim (m.24)</option>
           <option value="istifa">İstifa (haklı neden yok)</option>
+          <option value="ikale">İkale (bozma sözleşmesi)</option>
           <option value="emeklilik">Emeklilik</option>
           <option value="askerlik">Askerlik</option>
           <option value="evlilik">Evlilik (kadın işçi, 1 yıl içinde)</option>
@@ -59,32 +60,56 @@
     </label>
   </section>
 
-  <!-- Soru -->
+  <!-- Soru / Konuşma -->
   <section class="bg-white rounded-xl shadow p-5 mb-6">
-    <h2 class="font-semibold mb-2">3 · Sorunuz <span class="text-slate-400 font-normal">(opsiyonel)</span></h2>
-    <input type="text" id="soru" placeholder="Örn: İstifa edersem ne kaybederim? / İşsizlik maaşım kaç ay yatar?"
-      class="w-full rounded-lg border-slate-300 border p-3">
-    <button id="hesaplaBtn" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-3 transition">
-      Hesapla
-    </button>
+    <h2 class="font-semibold mb-2">3 · Sorunuz</h2>
+    <p class="text-xs text-slate-400 mb-2">Tek kalem sorabilir ya da senaryo karşılaştırması isteyebilirsiniz —
+      örn. "istifa edersem ne kaybederim, işveren çıkarırsa ne alırım?" ya da "3 ay daha çalışırsam ne değişir?"</p>
+    <div id="konusmaGecmisi" class="space-y-2 mb-3"></div>
+    <div class="flex gap-2">
+      <input type="text" id="soru" placeholder="Örn: İstifa edersem ne kaybederim? İkale yapsam mantıklı mı?"
+        class="flex-1 rounded-lg border-slate-300 border p-3">
+      <button id="hesaplaBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-6 transition whitespace-nowrap">
+        Hesapla
+      </button>
+    </div>
+    <button id="yeniSohbetBtn" class="mt-2 text-xs text-slate-400 hover:text-slate-600 underline">Yeni sohbet başlat (hafızayı temizle)</button>
   </section>
 
-  <!-- Sonuç -->
+  <!-- Sonuç: tekli -->
   <section id="sonucAlani" class="hidden">
     <div id="demoUyari" class="hidden mb-4 rounded-lg bg-amber-50 border border-amber-300 p-3 text-sm text-amber-800">
       🔧 Demo modu: GEMINI_API_KEY tanımlı değil, açıklama şablonla üretildi. Hesaplar tam doğrulukta.
     </div>
-    <div id="kartlar" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"></div>
+
+    <div id="kartlarAlani" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"></div>
+
+    <div id="senaryoTablosuAlani" class="hidden bg-white rounded-xl shadow p-5 mb-4 overflow-x-auto">
+      <h3 class="font-semibold mb-3">📊 Senaryo Karşılaştırması</h3>
+      <table class="w-full text-sm">
+        <thead><tr class="text-left text-slate-500 border-b">
+          <th class="py-2 pr-3">Senaryo</th><th class="py-2 pr-3">Çıkış</th>
+          <th class="py-2 pr-3">Tek seferlik toplam</th><th class="py-2">Aylık işsizlik</th>
+        </tr></thead>
+        <tbody id="senaryoTablosuGovde"></tbody>
+      </table>
+    </div>
+
+    <div id="grafikAlani" class="hidden bg-white rounded-xl shadow p-5 mb-4 text-center">
+      <img id="grafikImg" class="mx-auto max-w-full rounded" alt="Senaryo karşılaştırma grafiği">
+    </div>
+
     <div id="criticRozet" class="mb-4"></div>
     <div class="bg-white rounded-xl shadow p-5 mb-4">
       <div id="aciklama" class="prose prose-slate max-w-none whitespace-pre-wrap"></div>
     </div>
-    <details class="bg-white rounded-xl shadow p-5">
+    <details id="adimlarDetay" class="bg-white rounded-xl shadow p-5">
       <summary class="font-semibold cursor-pointer">🔍 Hesap adımları ve dayanaklar</summary>
       <div id="adimlar" class="mt-3 text-sm text-slate-600 space-y-4"></div>
     </details>
     <p class="mt-4 text-xs text-slate-400 text-center">⚖️ Bu araç bilgilendirme amaçlıdır; hukuki veya mali danışmanlık değildir.
-    Kesin tutarlar bordro kalemlerinize ve SGK kayıtlarınıza göre değişebilir.</p>
+    Kesin tutarlar bordro kalemlerinize ve SGK kayıtlarınıza göre değişebilir. İkale senaryosunda gösterilen tutarlar
+    yasal bir hak değil, işveren feshi olsaydı doğacak referans tutarlardır.</p>
   </section>
 
 </div>
@@ -93,6 +118,10 @@
 const ISIMLER = {kidem: "Kıdem tazminatı", ihbar: "İhbar tazminatı", issizlik: "İşsizlik ödeneği (aylık)"};
 const $ = id => document.getElementById(id);
 $("cikis").value = new Date().toISOString().slice(0, 10);
+
+// Oturum hafızası için basit istemci-taraflı kimlik
+const oturumId = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+let konusmaTuru = 0;
 
 // --- yükleme ---
 const dz = $("dropzone"), fi = $("dosyaInput");
@@ -108,14 +137,29 @@ async function yukle(f) {
   try {
     const r = await fetch("/api/yukle", {method: "POST", body: fd});
     const j = await r.json();
-    $("yukleDurum").textContent = r.ok ? `✅ ${f.name} — ${j.mesaj}` : `❌ ${j.hata}`;
+    if (!r.ok) { $("yukleDurum").textContent = `❌ ${j.hata}`; return; }
+    $("yukleDurum").textContent = `✅ ${f.name} — ${j.mesaj}`;
+    if (j.onerilen_alanlar) {
+      const o = j.onerilen_alanlar;
+      if (o.brut_maas) $("brutMaas").value = parseFloat(String(o.brut_maas).replace(/[^\d.]/g, "")) || $("brutMaas").value;
+      if (o.ise_giris) { /* Excel tarih formatları çeşitli olduğundan kullanıcı onayına bırakılır */ }
+    }
   } catch { $("yukleDurum").textContent = "❌ Yükleme başarısız."; }
 }
 
+// --- yeni sohbet ---
+$("yeniSohbetBtn").addEventListener("click", async () => {
+  await fetch("/api/oturum-sifirla", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({oturum_id: oturumId})});
+  $("konusmaGecmisi").innerHTML = "";
+  konusmaTuru = 0;
+  $("sonucAlani").classList.add("hidden");
+});
+
 // --- hesaplama ---
 $("hesaplaBtn").addEventListener("click", async () => {
+  const soruMetni = $("soru").value.trim();
   const btn = $("hesaplaBtn");
-  btn.disabled = true; btn.textContent = "Ajanlar çalışıyor: plan → hesap → doğrulama → açıklama...";
+  btn.disabled = true; btn.textContent = "...";
   try {
     const r = await fetch("/api/hesapla", {
       method: "POST", headers: {"Content-Type": "application/json"},
@@ -124,40 +168,65 @@ $("hesaplaBtn").addEventListener("click", async () => {
         brut_maas: +$("brutMaas").value, yan_haklar_aylik: +$("yanHaklar").value,
         ayrilis: $("ayrilis").value, vergi_dilimi: +$("vergiDilimi").value,
         ihbar_suresi_kullandirildi: $("ihbarKullandirildi").checked,
-        soru: $("soru").value,
+        soru: soruMetni, oturum_id: oturumId,
       }),
     });
     const j = await r.json();
     if (!r.ok) { alert(j.hata || "Hata"); return; }
+    if (soruMetni) {
+      konusmaTuru++;
+      const div = document.createElement("div");
+      div.className = "text-sm bg-slate-50 rounded-lg p-2 text-slate-600";
+      div.innerHTML = `<span class="font-semibold">Siz:</span> ${soruMetni}`;
+      $("konusmaGecmisi").appendChild(div);
+      $("soru").value = "";
+    }
     goster(j);
   } catch (e) { alert("Sunucuya ulaşılamadı: " + e); }
   finally { btn.disabled = false; btn.textContent = "Hesapla"; }
 });
 
+function tl(n) { return (n || 0).toLocaleString("tr-TR", {maximumFractionDigits: 0}) + " TL"; }
+
 function goster(j) {
   $("sonucAlani").classList.remove("hidden");
   $("demoUyari").classList.toggle("hidden", !j.demo_mode);
 
-  $("kartlar").innerHTML = Object.entries(j.sonuclar).map(([k, s]) => `
-    <div class="bg-white rounded-xl shadow p-4 text-center">
-      <p class="text-sm text-slate-500">${ISIMLER[k]}</p>
-      <p class="text-2xl font-bold ${s.hak_var ? "text-slate-900" : "text-slate-400"}">
-        ${s.hak_var ? s.net.toLocaleString("tr-TR", {maximumFractionDigits: 0}) + " TL" : "Hak yok"}
-      </p>
-    </div>`).join("");
+  const senaryoModu = !!j.senaryolar;
+  $("kartlarAlani").classList.toggle("hidden", senaryoModu);
+  $("senaryoTablosuAlani").classList.toggle("hidden", !senaryoModu);
+  $("grafikAlani").classList.toggle("hidden", !j.grafik);
+  $("adimlarDetay").classList.toggle("hidden", senaryoModu);
+
+  if (senaryoModu) {
+    $("senaryoTablosuGovde").innerHTML = j.senaryolar.map(s => `
+      <tr class="border-b last:border-0">
+        <td class="py-2 pr-3 font-medium">${s.etiket}</td>
+        <td class="py-2 pr-3 text-slate-500">${s.cikis}</td>
+        <td class="py-2 pr-3 font-semibold">${tl(s.tek_seferlik_toplam)}</td>
+        <td class="py-2">${s.aylik_issizlik ? tl(s.aylik_issizlik) + "/ay" : "—"}</td>
+      </tr>`).join("");
+    if (j.grafik) $("grafikImg").src = j.grafik;
+  } else {
+    $("kartlarAlani").innerHTML = Object.entries(j.sonuclar).map(([k, s]) => `
+      <div class="bg-white rounded-xl shadow p-4 text-center">
+        <p class="text-sm text-slate-500">${ISIMLER[k]}</p>
+        <p class="text-2xl font-bold ${s.hak_var ? "text-slate-900" : "text-slate-400"}">
+          ${s.hak_var ? tl(s.net) : "Hak yok"}
+        </p>
+      </div>`).join("");
+    $("adimlar").innerHTML = Object.entries(j.sonuclar).map(([k, s]) => `
+      <div><p class="font-semibold text-slate-800">${ISIMLER[k]}</p>
+        <ul class="list-disc ml-5">${s.adimlar.map(a => `<li>${a}</li>`).join("")}</ul>
+        ${s.notlar.map(n => `<p class="text-xs text-slate-400 mt-1">ℹ️ ${n}</p>`).join("")}
+      </div>`).join("");
+  }
 
   $("criticRozet").innerHTML = j.ihlaller.length
     ? `<div class="rounded-lg bg-red-50 border border-red-300 p-3 text-sm text-red-800">⚠️ Critic doğrulaması uyarı verdi:<br>${j.ihlaller.map(i => "• " + i).join("<br>")}</div>`
     : `<div class="rounded-lg bg-green-50 border border-green-300 p-3 text-sm text-green-800">✅ Critic: tüm tutarlar bağımsız doğrulama kurallarından geçti.</div>`;
 
   $("aciklama").textContent = j.aciklama;
-
-  $("adimlar").innerHTML = Object.entries(j.sonuclar).map(([k, s]) => `
-    <div><p class="font-semibold text-slate-800">${ISIMLER[k]}</p>
-      <ul class="list-disc ml-5">${s.adimlar.map(a => `<li>${a}</li>`).join("")}</ul>
-      ${s.notlar.map(n => `<p class="text-xs text-slate-400 mt-1">ℹ️ ${n}</p>`).join("")}
-    </div>`).join("");
-
   $("sonucAlani").scrollIntoView({behavior: "smooth"});
 }
 </script>
